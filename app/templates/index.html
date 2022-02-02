@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block style %}
+    ul{ display: inline-flex;
+        padding-right: 50px;
+        list-style: none;
+       }
+    ul>li{ margin-right: 50px;
+           font-size: large;
+       }
+    .login{ position: absolute;
+            right: 50px;
+        }
+{% endblock %}
+
+{% block title %} Main page {% endblock %}
+
+{% block content %}
+    <ul>
+        <li><a href="{{ url_for('show_index_page') }}">Home</a></li>
+        <li><a href="">Categories</a></li>
+        <li class="login"><a href="{{ url_for('show_login_page') }}">Log in</a></li>
+    </ul>
+    <hr>
+    <h3>User info:</h3>
+    {% for i in users %}
+        <p>{{i.name}} : {{i.date}}</p>
+    {% endfor %}
+
+{% endblock %}
