@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block title %} User_profile {% endblock %}
+
+{% block content %}
+    <h2>User profile:</h2>
+    <p>Welcome {{ user.username }}!</p>
+    <p>You have {{ posts_count }} posts </p>
+    <ul>
+        {% for post in posts %}
+        <li><a href="">{{ post.title }}</a> || {{ post.pub_date.strftime('%Y-%m-%d')  }}</li>
+        {% endfor %}
+    </ul>
+    <h2>Create new post:</h2>
+
+{% endblock %}
