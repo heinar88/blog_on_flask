@@ -19,12 +19,16 @@
     <ul>
         <li><a href="{{ url_for('show_index_page') }}">Home</a></li>
         <li><a href="">Categories</a></li>
+        {% if current_user.is_anonymous %}
         <li class="login"><a href="{{ url_for('show_login_page') }}">Log in</a></li>
+        {% else %}
+        <li class="login"><a href="{{ url_for('logout') }}">Log out</a></li>
+        {% endif %}
     </ul>
     <hr>
     <h3>User info:</h3>
     {% for i in users %}
-        <p>{{i.name}} : {{i.date}}</p>
+        <p>{{i.username}} : {% for x in i.posts %} {{x.title}} {% endfor %}</p>
     {% endfor %}
 
 {% endblock %}

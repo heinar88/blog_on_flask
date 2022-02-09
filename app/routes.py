@@ -1,33 +1,39 @@
-from flask import render_template, flash, redirect, url_for
+from flask import render_template, flash, redirect, url_for, request
 from app import app
 from app.forms import LoginForm
+from flask_login import current_user, login_user, logout_user, login_required
+from app.models import User, Post
+from werkzeug.urls import url_parse
 
 from datetime import datetime
 
 
 @app.route('/')
+@login_required
 def show_index_page():
-    users = [
-        {
-            'name': 'Vasya',
-            'date': datetime.ctime(datetime.now()),
-        },
-        {
-            'name': 'Sanya',
-            'date': datetime.ctime(datetime(2022, 1, 25, 14, 0, 0))
-        }
-
-    ]
+    users = list(User.query.all())
     return render_template('index.html', users=users)
 
 
 @app.route('/login', methods=['GET', 'POST'])
 def show_login_page():
+    if current_user.is_authenticated:
+        return redirect(url_for('show_index_page'))
     form = LoginForm()
     if form.validate_on_submit():
-        flash(f"""Login requested for user {form.username.data}, 
-                  user data: email - {form.user_email.data},
-                             password - {form.user_password.data}        
-        """)
-        return redirect(url_for('show_index_page'))
+        user = User.query.filter_by(username=form.username.data).first()
+        if user is None or not user.check_password(form.user_password.data):
+            flash('Invalid username or password')
+            return redirect(url_for('show_login_page'))
+        login_user(user)
+        next_page = request.args.get('next')
+        if not next_page or url_parse(next_page).netloc != '':
+            next_page = url_for('show_index_page')
+        return redirect(next_page)
     return render_template('login.html', form=form)
+
+
+@app.route('/logout')
+def logout():
+    logout_user()
+    return redirect(url_for('show_index_page'))
