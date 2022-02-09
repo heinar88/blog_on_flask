@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, EmailField
+from wtforms import StringField, PasswordField, SubmitField, EmailField, TextAreaField
 from wtforms.validators import DataRequired, EqualTo, ValidationError
 
 from app.models import User
@@ -30,3 +30,10 @@ class RegistrationForm(FlaskForm):
         email = User.query.filter_by(email=email.data).first()
         if email is None:
             raise ValidationError('This email already exist')
+
+
+class CreatePostForm(FlaskForm):
+    title = StringField('Title for your post', [DataRequired()])
+    post_content = TextAreaField()
+    submit = SubmitField('Create post')
+

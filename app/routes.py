@@ -1,6 +1,6 @@
 from flask import render_template, flash, redirect, url_for, request
 from app import app, db
-from app.forms import LoginForm, RegistrationForm
+from app.forms import LoginForm, RegistrationForm, CreatePostForm
 from flask_login import current_user, login_user, logout_user, login_required
 from app.models import User, Post
 from werkzeug.urls import url_parse
@@ -54,10 +54,25 @@ def show_registry_page():
     return render_template('registary.html', form=form)
 
 
-@app.route('/user/<username>')
+@app.route('/user/<username>', methods=['GET', 'POST'])
 @login_required
 def show_user_profile(username):
     user = User.query.filter_by(username=username).first_or_404()
     posts = user.posts.all()
     posts_count = len(posts)
-    return render_template('user_detail.html', user=user, posts=posts, posts_count=posts_count)
+    form = CreatePostForm()
+    if form.validate_on_submit():
+        post = Post(title=form.title.data, content=form.post_content.data)
+        post.author = user
+        db.session.add(post)
+        db.session.commit()
+        flash('Your post has been published')
+        return redirect(url_for('show_user_profile', username=user.username))
+    return render_template('user_detail.html', user=user, posts=posts, posts_count=posts_count, form=form)
+
+
+@app.route('/post/<post_id>')
+@login_required
+def show_post_detail(post_id):
+    post = Post.query.get(post_id)
+    return render_template('post_detail.html', post=post)

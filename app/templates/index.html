@@ -22,6 +22,7 @@
         {% if current_user.is_anonymous %}
         <li class="login"><a href="{{ url_for('show_login_page') }}">Log in</a></li>
         {% else %}
+        <li class="profile"><a href="{{ url_for('show_user_profile', username=current_user.username) }}">User_profile</a></li>
         <li class="login"><a href="{{ url_for('logout') }}">Log out</a></li>
         {% endif %}
     </ul>

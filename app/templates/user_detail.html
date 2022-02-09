@@ -8,9 +8,28 @@
     <p>You have {{ posts_count }} posts </p>
     <ul>
         {% for post in posts %}
-        <li><a href="">{{ post.title }}</a> || {{ post.pub_date.strftime('%Y-%m-%d')  }}</li>
+        <li><a href="{{url_for('show_post_detail', post_id=post.id)}}">{{ post.title }}</a> || {{ post.pub_date.strftime('%Y-%m-%d')  }}</li>
         {% endfor %}
     </ul>
     <h2>Create new post:</h2>
-
+    <form action="" method="post" novalidate>
+      {{ form.hidden_tag() }}
+      <div>
+        {{ form.title.label }}<br>
+        {{ form.title(size=32) }}
+        {% for error in form.title.errors %}
+            <span style="color: red;">{{ error }}</span>
+          {% endfor %}
+      </div>
+      <div>
+        {{ form.post_content.label }}<br>
+        {{ form.post_content() }}
+        {% for error in form.post_content.errors %}
+           <span style="color: red;">{{ error }}</span>
+          {% endfor %}
+      </div>
+       <div>
+        {{ form.submit() }}
+      </div>
+    </form>
 {% endblock %}
